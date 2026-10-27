@@ -27,3 +27,13 @@ main.c:6:5: runtime error: load of address 0x76efe310002c with insufficient spac
 ```
 
 Can't run valgrind and ASan together because they both try to detect memory errors with different mechanisms, so their runtimes may conflict.
+
+References
+
+1. Valgrind. (2022). *Valgrind User Manual*.
+   https://valgrind.org/docs/manual/valgrind_manual.pdf
+
+2. Clang. (n.d.). *AddressSanitizer*.
+   https://clang.llvm.org/docs/AddressSanitizer.html
+
+#  Memory
