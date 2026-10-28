@@ -36,4 +36,9 @@ References
 2. Clang. (n.d.). *AddressSanitizer*.
    https://clang.llvm.org/docs/AddressSanitizer.html
 
-#  Memory
+##  Memory
+
+    1. malloc() allocates size bytes of memory and returns a pointer to the allocated memory 
+    2. realloc() receives a pointer and resizes the memory block to byte size. If the new size is larger than the old size, the added memory will not be initialized.
+    3. strdup() duplicates a string and returns a pointer to the duplicated string 
+    4. getline() receives a pointer to a buffer pointer, a size pointer n to the buffer's allocated size, and a stream. It reads a line of text from stream into the buffer. If not enough memory is allocated for the string, getlines reallocs the memory block
