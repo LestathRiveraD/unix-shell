@@ -37,7 +37,7 @@ Can't run valgrind and ASan together because they both try to detect memory erro
 
 ### getline takes a char ** and a size_t* . Why pointers to pointers, and who owns the buffer?
 
-    An array is just a contiguous block of bytes, where each element is separated by a separator. We need a pointer to the first element to implement this behavior. A string is a char*. So, for a string array, we want a pointer to the first element of a char*, that's why we need a char**.
+    An array is just a contiguous block of bytes. We need a pointer to the first element to implement this behavior. A string is a char*. So, for a string array, we want a pointer to the first element of a char*, that's why we need a char**.
     The buffer is owned by the lineptr* that points to the memory allocated by getline, so every char* has its own allocated piece of memory and should be freed before terminating the program
     
 ### Valgrind checks    

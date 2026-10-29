@@ -1,45 +1,41 @@
 Prediction: According to logs, undefined behavior will occur, so at least I'm expecting valgrind/ASan to not flag it, not necessarily. 
 
 ```bash
-lestat@msi:~/Projects/unix-shell/experiments/memory$    cc main-free-twice.c -std=c17 -Wall -Wextra -Wpedantic -g -fsanitize=address,undefined -fno-omit-frame-pointer -o asan
-lestat@msi:~/Projects/unix-shell/experiments/memory$ ./main
-123
-123
-123
-a
-4: a
-3: 123
-2: 123
-1: 123
+lestat@msi:~/Projects/unix-shell/experiments/memory$ cc main-free-twice.c -std=c17 -Wall -Wextra -Wpedantic -g -o main
 lestat@msi:~/Projects/unix-shell/experiments/memory$ valgrind ./main
-==15122== Memcheck, a memory error detector
-==15122== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
-==15122== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
-==15122== Command: ./main
-==15122== 
+==17719== Memcheck, a memory error detector
+==17719== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==17719== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==17719== Command: ./main
+==17719== 
 123
 123
 123
 a
+==17719== Invalid free() / delete / delete[] / realloc()
+==17719==    at 0x484988F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17719==    by 0x1092FD: main (main-free-twice.c:29)
+==17719==  Address 0x4a90090 is 0 bytes inside a block of size 120 free'd
+==17719==    at 0x484988F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17719==    by 0x1092F1: main (main-free-twice.c:28)
+==17719==  Block was alloc'd at
+==17719==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17719==    by 0x4900E64: getdelim (iogetdelim.c:65)
+==17719==    by 0x1092DF: main (main-free-twice.c:18)
+==17719== 
 4: a
 3: 123
 2: 123
 1: 123
-==15122== 
-==15122== HEAP SUMMARY:
-==15122==     in use at exit: 120 bytes in 1 blocks
-==15122==   total heap usage: 10 allocs, 9 frees, 2,244 bytes allocated
-==15122== 
-==15122== LEAK SUMMARY:
-==15122==    definitely lost: 120 bytes in 1 blocks
-==15122==    indirectly lost: 0 bytes in 0 blocks
-==15122==      possibly lost: 0 bytes in 0 blocks
-==15122==    still reachable: 0 bytes in 0 blocks
-==15122==         suppressed: 0 bytes in 0 blocks
-==15122== Rerun with --leak-check=full to see details of leaked memory
-==15122== 
-==15122== For lists of detected and suppressed errors, rerun with: -s
-==15122== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17719== 
+==17719== HEAP SUMMARY:
+==17719==     in use at exit: 0 bytes in 0 blocks
+==17719==   total heap usage: 10 allocs, 11 frees, 2,244 bytes allocated
+==17719== 
+==17719== All heap blocks were freed -- no leaks are possible
+==17719== 
+==17719== For lists of detected and suppressed errors, rerun with: -s
+==17719== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
 lestat@msi:~/Projects/unix-shell/experiments/memory$ nvim main-free-twice.c
 lestat@msi:~/Projects/unix-shell/experiments/memory$ man 3 malloc
 lestat@msi:~/Projects/unix-shell/experiments/memory$ cc main-free-twice.c -std=c17 -Wall -Wextra -Wpedantic -g -fsanitize=address,undefined -fno-omit-frame-pointer -o asan
@@ -77,4 +73,4 @@ SUMMARY: AddressSanitizer: double-free ../../../../src/libsanitizer/asan/asan_ma
 ==15187==ABORTING
 ```
 
-My prediction was partially wrong, ASan did flag the double free.
+My prediction was wrong, both ASan and Valgrind did flag the double free.
