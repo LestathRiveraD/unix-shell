@@ -1,20 +1,40 @@
+#define _POSIX_C_SOURCE 200809L // strdup is a POSIX function, apparently my operating system was not exposing  strdup, so C was assuming its return value was an integer. Adding this line fixed the issue
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-char *arr[1] = {}; 
-size_t n = 100;
+char **arr;
 
 int main(void)
 {
-    size_t cur = 0; 
-    while (1)
+    size_t size = 1, next = 0;
+    arr = malloc(sizeof(char*) * size);
+    
+    if (arr == NULL)
+        return 1;
+
+    char* s = NULL; 
+    size_t n;
+    while (getline(&s, &n, stdin) != -1)
     {
-        char *s;
-        getline(&s, &cur, stdin);
-
-        printf("Received size %i: %s", (int)cur, s);
-
-        if (cur <= 0)
-            break;
+        if (next >= size)
+        {
+            size *= 2;
+            arr = realloc(arr, sizeof(char**) * size + 1); 
+        }
+        arr[next] = strdup(s); 
+        next++;
     }
+    free(s);
+
+    
+    for (int i = (int)next - 1; i >= 0; i--) 
+    {
+        printf("%i: %s", i + 1, arr[i]);
+        free(arr[i]);
+    }
+
+    free(arr);
+
+    return 0;
 }
